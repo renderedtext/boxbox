@@ -48,6 +48,10 @@ Vagrant.configure(2) do |config|
   # allow firefox to be started from the box
   config.ssh.forward_x11 = true
 
+  # resolve issues with instable network connection on WiFi routers
+  # use google's DNS for hostname resolution
+  config.vm.provision :shell, inline: "sudo sh -c 'echo \"nameserver 8.8.8.8\" > /etc/resolv.conf'", run: 'always'
+
   config.vm.provider "virtualbox" do |vb|
     vb.memory = Helpers.memory_50_percent
     vb.cpus = Helpers.cpu_count
