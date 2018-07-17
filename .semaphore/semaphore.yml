@@ -15,9 +15,9 @@ blocks:
       - name: "Test"
         commands:
           - echo $GCE_CREDS | base64 --decode > gce-creds.json
-          - make gsuitl.configure
           - checkout
           - cd provisioner
+          - make gsutil.configure
           - make vagrant.install
           - make provision
           - 'if [ "$SEMAPHORE_GIT_BRANCH" = "boxbox18" ]; then export VERSION=$(date +%F-%H-%M); fi'
