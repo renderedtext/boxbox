@@ -8,7 +8,7 @@ gsutil.configure:
 	gcloud container clusters get-credentials prod --zone us-east4
 
 vagrant.install:
-	sudo apt-get install virtualbox -y
+	sudo apt-get install gcc make linux-headers-$(shell uname -r) dkms virtualbox -y
 	wget https://releases.hashicorp.com/vagrant/2.1.2/vagrant_2.1.2_x86_64.deb
 	sudo dpkg -i vagrant_2.1.2_x86_64.deb
 	vagrant --version
