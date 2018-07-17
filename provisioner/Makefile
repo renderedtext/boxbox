@@ -1,0 +1,22 @@
+.PHONY: vagrant.install provision package release
+
+REL_BUCKET=boxbox-releases
+
+vagrant.install:
+	sudo apt-get install virtualbox -y
+	wget https://releases.hashicorp.com/vagrant/2.1.2/vagrant_2.1.2_x86_64.deb
+	sudo dpkg -i vagrant_2.1.2_x86_64.deb
+	vagrant --version
+
+provision:
+	vagrant plugin install vagrant-hostmanager	
+	vagrant up
+
+package:
+	vagrant package --output boxbox-$(VERSION).box
+
+release:
+	gsutil cp boxbox-$(VERSION).box gs://$(REL_BUCKET)/boxbox-$(VERSION).box
+	gsutil acl -R ch -u AllUsers:R gs://$(REL_BUCKET)/boxbox-$(VERSION).box
+	gsutil setmeta -h "Cache-Control:private, max-age=0, no-transform" gs://$(REL_BUCKET)/boxbox-$(VERSION).box
+	echo "https://storage.googleapis.com/$(REL_BUCKET)/boxbox-$(VERSION).box"

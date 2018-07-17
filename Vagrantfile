@@ -27,16 +27,13 @@ end
 
 
 Vagrant.configure(2) do |config|
-  config.vm.box = "bento/ubuntu-14.04"
+  config.vm.box = "boxbox"
 
   # make 'boxbox' the hostname of the machine
   config.vm.hostname = "boxbox" 
   
   # I prefer a class A private network that is easy to remember
   config.vm.network "private_network", :ip => "10.20.30.40"
-
-  # run provision.sh when the box is started for the first time
-  config.vm.provision "shell", :privileged => false, :inline => "bash /vagrant/provision.sh"
 
   # make 'boxbox' available in your browser
   config.hostmanager.enabled = true
