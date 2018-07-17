@@ -11,6 +11,7 @@ vagrant.install:
 	wget -q -O - http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc | sudo apt-key add -
 	sudo sh -c 'echo "deb http://download.virtualbox.org/virtualbox/debian bionic non-free contrib" >> /etc/apt/sources.list.d/virtualbox.org.list'
 	sudo apt-get update
+	sudo apt-get --reinstall install virtualbox-dkms -y
 	sudo apt-get install libelf-dev virtualbox-5.1 -y
 	cat /var/log/vbox-install.log
 	sudo /usr/lib/virtualbox/vboxdrv.sh setup
