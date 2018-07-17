@@ -2,6 +2,11 @@
 
 REL_BUCKET=boxbox-releases
 
+gsutil.configure:
+	gcloud auth activate-service-account deploy-from-semaphore@semaphore2-prod.iam.gserviceaccount.com --key-file ~/gce-creds.json
+	gcloud config set project semaphore2-prod
+	gcloud container clusters get-credentials prod --zone us-east4
+
 vagrant.install:
 	sudo apt-get install virtualbox -y
 	wget https://releases.hashicorp.com/vagrant/2.1.2/vagrant_2.1.2_x86_64.deb
@@ -9,7 +14,7 @@ vagrant.install:
 	vagrant --version
 
 provision:
-	vagrant plugin install vagrant-hostmanager	
+	vagrant plugin install vagrant-hostmanager
 	vagrant up
 
 package:

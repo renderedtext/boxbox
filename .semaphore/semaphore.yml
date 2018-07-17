@@ -1,0 +1,26 @@
+version: "v1.0-beta-task"
+name: BoxBox
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1404
+
+blocks:
+  - name: "Build & Publish"
+    task:
+      secrets:
+        - name: s2prod-gce
+
+      jobs:
+      - name: "Test"
+        commands:
+          - echo $GCE_CREDS | base64 --decode > gce-creds.json
+          - make gsuitl.configure
+          - checkout
+          - cd provisioner
+          - make vagrant.install
+          - make provision
+          - 'if [ "$SEMAPHORE_GIT_BRANCH" = "boxbox18" ]; then export VERSION=$(date +%F-%H-%M); fi'
+          - 'if [ "$SEMAPHORE_GIT_BRANCH" = "boxbox18" ]; then make package VERSION=$(VERSION); fi'
+          - 'if [ "$SEMAPHORE_GIT_BRANCH" = "boxbox18" ]; then make release VERSION=$(VERSION); fi'
+          - 'if [ "$SEMAPHORE_GIT_BRANCH" = "boxbox18" ]; then curl -X POST -H "Content-type: application/json" --data "{\"text\":\"BoxBox new stable release: boxbox-$VERSION\"}" "https://hooks.slack.com/services/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"; fi'
