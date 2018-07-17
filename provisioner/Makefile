@@ -8,7 +8,10 @@ gsutil.configure:
 	gcloud container clusters get-credentials prod --zone us-east4
 
 vagrant.install:
-	sudo apt-get install gcc make linux-headers-$(shell uname -r) dkms virtualbox -y
+	wget -q -O - http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc | sudo apt-key add -
+	sudo sh -c 'echo "deb http://download.virtualbox.org/virtualbox/debian bionic non-free contrib" >> /etc/apt/sources.list.d/virtualbox.org.list'
+	sudo apt-get update
+	sudo apt-get install virtualbox-5.1
 	wget https://releases.hashicorp.com/vagrant/2.1.2/vagrant_2.1.2_x86_64.deb
 	sudo dpkg -i vagrant_2.1.2_x86_64.deb
 	vagrant --version
