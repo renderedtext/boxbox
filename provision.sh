@@ -2,6 +2,10 @@
 
 set -eou pipefail
 
+echo "[PROVISIONER] Set Google's DNS as default"
+echo "nameserver 8.8.8.8" | sudo tee /etc/resolvconf/resolv.conf.d/head
+sudo resolvconf -u
+
 echo "[PROVISIONER] Set up timezone to Belgrade"
 sudo rm -rf /etc/localtime
 sudo ln -s /usr/share/zoneinfo/Europe/Belgrade /etc/localtime
