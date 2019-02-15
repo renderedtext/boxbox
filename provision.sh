@@ -38,9 +38,11 @@ curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 echo "[PROVISIONER] Running apt update" 
 sudo apt update
 
+echo "[PROVISIONER] Installing Basic Tools"
 sudo apt-get install -y \
   htop \
   git \
+  vim \
   tmux \
   zsh \
   curl \
@@ -68,11 +70,6 @@ echo "[PROVISIONER] Installing Docker"
 curl -L https://get.docker.com | bash > /dev/null
 sudo usermod -aG docker vagrant
 
-echo "[PROVISIONER] Installing neovim"
-curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
-chmod u+x nvim.appimage
-sudo mv nvim.appimage /usr/local/bin/nvim
-
 echo "[PROVISIONER] Installing Firefox"
 wget https://sourceforge.net/projects/ubuntuzilla/files/mozilla/apt/pool/main/f/firefox-mozilla-build/firefox-mozilla-build_56.0.1-0ubuntu1_amd64.deb
 sudo dpkg -i firefox-mozilla-build_56.0.1-0ubuntu1_amd64.deb
@@ -91,8 +88,8 @@ sudo chmod +x /usr/local/bin/docker-compose
 
 echo "[PROVISIONER] Creating postgres user 'developer' with CREATEDB privilege"
 sudo systemctl start postgresql
-sudo -u postgres bash -c "psql -c \"ALTER USER developer WITH SUPERUSER;\""
 sudo -u postgres bash -c "psql -c \"CREATE USER developer WITH PASSWORD 'developer';\""
+sudo -u postgres bash -c "psql -c \"ALTER USER developer WITH SUPERUSER;\""
 sudo -u postgres bash -c "psql -c \"ALTER USER developer CREATEDB;\""
 
 echo "[PROVISIONER] Installing yarn"
@@ -111,9 +108,9 @@ curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.24.1/minik
 chmod +x minikube
 sudo mv minikube /usr/local/bin/
 
-echo "[PROVISIONER] Installing golang 1.9"
-sudo curl -O https://storage.googleapis.com/golang/go1.9.1.linux-amd64.tar.gz
-sudo tar -xf go1.9.1.linux-amd64.tar.gz
+echo "[PROVISIONER] Installing golang 1.11"
+sudo curl -O https://storage.googleapis.com/golang/go1.11.1.linux-amd64.tar.gz
+sudo tar -xf go1.11.1.linux-amd64.tar.gz
 sudo mv go /usr/local
 
 echo "[PROVISIONER] Rabbitmq configuration"
@@ -138,7 +135,3 @@ echo "[PROVISIONER] Installing dotfiles"
 git clone https://github.com/renderedtext/dotfiles-1 /home/vagrant/dotfiles
 cd /home/vagrant/dotfiles && ./install && cd -
 echo "source ~/.aliases" >> /home/vagrant/.bashrc
-
-echo "[PROVISIONER] Installing neovim config"
-git clone https://github.com/renderedtext/neovimfiles ~/.config/nvim
-cd /home/vagrant/.config/nvim && ./install && cd -
