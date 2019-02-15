@@ -128,6 +128,11 @@ wget https://raw.githubusercontent.com/johanhaleby/kubetail/master/kubetail -o /
 sudo chmod +x /tmp/kubetail
 sudo mv /tmp/kubetail /usr/local/bin/kubetail
 
+echo "[PROVISIONER] Configure protobuf and elixir"
+sudo apt-get install -y protobuf-compiler
+mix local.hex --force
+mix escript.install hex protobuf --force
+
 echo "[PROVISIONER] Cleaning up config permisssions"
 sudo chmod -R 777 /home/vagrant/.config
 
