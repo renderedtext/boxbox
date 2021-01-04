@@ -2,12 +2,12 @@
 # vi: set ft=ruby :
 
 module Helpers
-  module_function 
+  module_function
 
   def mac?
     RbConfig::CONFIG["host_os"] =~ /darwin/
   end
-  
+
   def memory_50_percent
     if mac?
       `sysctl -n hw.memsize`.to_i / 1024 / 1024 / 2
@@ -27,11 +27,11 @@ end
 
 
 Vagrant.configure(2) do |config|
-  config.vm.box = "bento/ubuntu-14.04"
+  config.vm.box = "bento/ubuntu-18.04"
 
   # make 'boxbox' the hostname of the machine
-  config.vm.hostname = "boxbox" 
-  
+  config.vm.hostname = "boxbox"
+
   # I prefer a class A private network that is easy to remember
   config.vm.network "private_network", :ip => "10.20.30.40"
 
@@ -51,10 +51,10 @@ Vagrant.configure(2) do |config|
   config.vm.provider "virtualbox" do |vb|
     vb.memory = Helpers.memory_50_percent
     vb.cpus = Helpers.cpu_count
- 
+
     # update time in the machine every 10000 seconds, to avoid issues with bad timestamps
     vb.customize ["guestproperty", "set", :id, "/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold", 10000]
-    
+
     # hack to make ssh work ¯\_(ツ)_/¯
     # vb.customize ["modifyvm", :id, "--usbxhci", "on"] # Connect USB3 disk
     vb.customize ["modifyvm", :id, "--cableconnected1", "on"]

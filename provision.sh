@@ -11,7 +11,7 @@ curl -L https://get.docker.com | bash > /dev/null
 sudo usermod -aG docker vagrant
 
 echo "[PROVISIONER] Installing Basic Tools"
-sudo apt-get install -y htop git vim tmux zsh curl wget build-essential xauth ack-grep python-pip software-properties-common python-software-properties
+sudo apt-get install -y htop git vim tmux zsh curl wget build-essential xauth ack-grep python-pip software-properties-common
 
 echo "[PROVISIONER] Installing Firefox"
 wget https://sourceforge.net/projects/ubuntuzilla/files/mozilla/apt/pool/main/f/firefox-mozilla-build/firefox-mozilla-build_46.0.1-0ubuntu1_amd64.deb
@@ -34,10 +34,10 @@ sudo curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-c
 sudo chmod +x /usr/local/bin/docker-compose
 
 echo "[PROVISIONER] Installing postgresql"
-sudo add-apt-repository "deb https://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main"
-wget --quiet -O - https://postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg 9.6" >> /etc/apt/sources.list.d/pgdg.list'
+wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | sudo apt-key add -
 sudo apt-get update
-sudo apt-get install -y postgresql-client-9.4 postgresql-9.4 postgresql-contrib-9.4 libpq-dev postgresql-server-dev-9.4
+sudo apt-get install -y postgresql postgresql-contrib libpq-dev pgadmin3
 sudo update-rc.d postgresql enable
 sudo service postgresql start
 
@@ -62,17 +62,25 @@ sudo apt-get update
 sudo apt-get install -y esl-erlang elixir
 
 echo "[PROVISIONER] Installing node.js"
-curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
 echo "[PROVISIONER] Installing yarn"
 sudo npm install -g yarn
 
 echo "[PROVISIONER] Installing ruby"
-sudo apt-get -y install software-properties-common
-sudo apt-add-repository ppa:brightbox/ruby-ng
-sudo apt-get update
-sudo apt-get -y install ruby2.3 ruby2.3-dev
+sudo chown vagrant:vagrant ~/.config
+sudo apt-get install -y libssl-dev zlib1g-dev
+git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.zshrc
+echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(rbenv init -)"' >> ~/.zshrc
+echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.zshrc
+echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
+~/.rbenv/bin/rbenv install 2.7.2
+~/.rbenv/bin/rbenv global 2.7.2
 sudo gem install bundler
 
 echo "[PROVISIONER] Installing awscli"
